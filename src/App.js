@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
@@ -14,9 +9,10 @@ import SentimentCharts from "./components/SentimentCharts";
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is already logged in (Persist authentication state)
+    // Check if user is already logged in
     const token = localStorage.getItem("token");
     setAuthenticated(!!token);
   }, []);
@@ -28,14 +24,21 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setAuthenticated(false);
+    // Redirect to the login page after logging out
+    navigate("/login");
   };
 
   return (
-    <Router>
+    <>
       <Navbar authenticated={authenticated} handleLogout={handleLogout} />
       <div className="container mx-auto p-4">
         <Routes>
-          <Route path="/" element={<SentimentForm />} />
+          <Route
+            path="/"
+            element={
+              authenticated ? <SentimentForm /> : <Navigate to="/login" />
+            }
+          />
           <Route
             path="/dashboard"
             element={authenticated ? <Dashboard /> : <Navigate to="/login" />}
@@ -59,7 +62,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
-    </Router>
+    </>
   );
 };
 
