@@ -1,4 +1,8 @@
-const API_BASE = "http://127.0.0.1:5000";
+import dotenv from "dotenv";
+dotenv.config();
+
+// Use the environment variable API_BASE or fall back to a default for development
+const API_BACKEND = process.env.API_BACKEND || "http://127.0.0.1:5000";
 
 export const analyzeSentiment = async (text) => {
   // Get the JWT token from localStorage (or sessionStorage)
